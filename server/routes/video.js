@@ -9,11 +9,7 @@ const ffmpeg = require("fluent-ffmpeg");
 // STORAGE MULTER CONFIG
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(
-      null,
-      "C:/Users/mitri/OneDrive/Desktop/Dev/node_with_react/umtube/uploads"
-      // uploads/ 에서 로컬 절대 경로로 바꾸니 영상 저장됨
-    );
+    cb(null, "../uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}_${file.originalname}`);
@@ -48,7 +44,7 @@ router.post("/uploadfiles", (req, res) => {
 });
 
 router.post("/thumbnail", (req, res) => {
-  let thumbsFilePath = "";
+  let filePath = "";
   let fileDuration = "";
 
   // 비디오 전체 정보 추출
@@ -63,29 +59,26 @@ router.post("/thumbnail", (req, res) => {
   ffmpeg(req.body.url)
     .on("filenames", function (filenames) {
       console.log("Will generate " + filenames.join(", "));
-      thumbsFilePath =
-        "C:/Users/mitri/OneDrive/Desktop/Dev/node_with_react/umtube/uploads/thumbnails" +
-        filenames[0];
+
+      filePath = "uploads/thumbnails/" + filenames[0];
     })
     .on("end", function () {
       console.log("Screenshots taken");
       return res.json({
         success: true,
-        thumbsFilePath: thumbsFilePath,
+        url: filePath,
         fileDuration: fileDuration,
       });
     })
     .on("error", function (err) {
-      console.error(err);
+      console.log(err);
       return res.json({ success: false, err });
     })
     .screenshots({
       // Will take screens at 20%, 40%, 60% and 80% of the video
       count: 1,
-      // uploads/thumbnails 에서 로컬 절대 경로로 바꾸니 스크린샷 저장됨
-      folder:
-        "C:/Users/mitri/OneDrive/Desktop/Dev/node_with_react/umtube/uploads/thumbnails",
-      size: "320x200",
+      folder: "../uploads/thumbnails",
+      size: "320x240",
       // %b input basename ( filename w/o extension )
       filename: "thumbnail-%b.png",
     });

@@ -13,15 +13,16 @@ const PrivateOptions = [
 
 const CategoryOptions = [
   { value: 0, label: "Film & Animation" },
-  { value: 1, label: "Autos & Vehicles" },
+  { value: 1, label: "Funny things" },
   { value: 2, label: "Music" },
   { value: 3, label: "Pets & Animals" },
+  { value: 4, label: "Daily Life" },
 ];
 
 function VideoUploadPage() {
   const [VideoTitle, setVideoTitle] = useState("");
   const [Description, setDescription] = useState("");
-  const [Private, setPrivate] = useState(0);
+  const [Privacy, setPrivacy] = useState(0);
   const [Category, setCategory] = useState("Film & Animation");
   const [FilePath, setFilePath] = useState("");
   const [Duration, setDuration] = useState("");
@@ -35,8 +36,8 @@ function VideoUploadPage() {
     setDescription(e.currentTarget.value);
   };
 
-  const onPrivateChange = (e) => {
-    setPrivate(e.currentTarget.value);
+  const onPrivacyChange = (e) => {
+    setPrivacy(e.currentTarget.value);
   };
 
   const onCategoryChange = (e) => {
@@ -54,12 +55,10 @@ function VideoUploadPage() {
     axios.post("/api/video/uploadfiles", formData, config).then((response) => {
       if (response.data.success) {
         console.log(response.data);
-
         let variable = {
           url: response.data.url,
           fileName: response.data.fileName,
         };
-
         setFilePath(response.data.url);
 
         axios.post("/api/video/thumbnail", variable).then((response) => {
@@ -83,21 +82,21 @@ function VideoUploadPage() {
         <Title level={2}>Upload Video</Title>
       </div>
 
-      <Form onSubmit>
+      <Form>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           {/* Drop Zone */}
           <Dropzone
-            accept="video/*"
+            // accept="video/*"
             onDrop={onDrop}
             multiple={false}
-            maxSize={10000000000000}
+            maxSize={800000000}
           >
             {({ getRootProps, getInputProps }) => (
               <div
                 style={{
                   width: "300px",
                   height: "240px",
-                  border: "1px solide lightgray",
+                  border: "1px solid lightgray",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -120,6 +119,7 @@ function VideoUploadPage() {
             </div>
           )}
         </div>
+
         <br />
         <br />
         <label>Title</label>
@@ -131,7 +131,7 @@ function VideoUploadPage() {
         <br />
         <br />
 
-        <select onChange={onPrivateChange}>
+        <select onChange={onPrivacyChange}>
           {PrivateOptions.map((item, index) => (
             <option key={index} value={item.value}>
               {item.label}
@@ -151,7 +151,7 @@ function VideoUploadPage() {
         <br />
         <br />
 
-        <Button type="primary" size="large" onClick>
+        <Button type="primary" size="large">
           Submit
         </Button>
       </Form>
