@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, List, Avatar } from "antd";
 import axios from "axios";
+import SideVideo from "./Sections/SideVideo";
 
 function VideoDetailPage(props) {
   const videoId = props.match.params.videoId;
@@ -12,12 +13,12 @@ function VideoDetailPage(props) {
     axios.post("/api/video/getVideoDetail", variable).then((response) => {
       if (response.data.success) {
         setVideoDetail(response.data.videoDetail);
+        // video.js 에서 exec 파라미터를 videoDetail로 주었는데 response.data.VideoDetail로 받아와서 오류 생겼음
       } else {
         alert("비디오 정보를 가져오는데 실패했습니다.");
       }
     });
   }, []);
-
   if (VideoDetail.writer) {
     return (
       <Row gutter={[16, 16]}>
@@ -39,7 +40,7 @@ function VideoDetailPage(props) {
           </div>
         </Col>
         <Col lg={6} xs={24}>
-          Side Videos
+          <SideVideo />
         </Col>
       </Row>
     );
