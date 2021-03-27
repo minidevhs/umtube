@@ -32,11 +32,44 @@ function Subscribe(props) {
       });
   }, []);
 
+  const OnSubscribe = () => {
+    let subscribedVariable = {
+      userTo: props.userTo,
+      userFrom: props.userFrom,
+    };
+
+    // 이미 구독 중이라면
+    if (Subscribed) {
+      axios
+        .post("/api/subscribe/unsubscribe", subscribedVariable)
+        .then((response) => {
+          if (response.data.success) {
+            setSubscribeNumber(SubscribeNumber - 1);
+            setSubscribed(!Subscribed);
+          } else {
+            alert("구독 취소 하는 데 실패 했습니다.");
+          }
+        });
+      // 아직 구독중이 아니라면
+    } else {
+      axios
+        .post("/api/subscribe/subscribe", subscribedVariable)
+        .then((response) => {
+          if (response.data.success) {
+            setSubscribeNumber(SubscribeNumber + 1);
+            setSubscribed(!Subscribed);
+          } else {
+            alert("구독 하는 데 실패 했습니다.");
+          }
+        });
+    }
+  };
+
   return (
     <div>
       <button
         style={{
-          backgroundColor: `${Subscribe ? "#AAAAAA" : "#CC0000"}`,
+          backgroundColor: `${Subscribed ? "#AAAAAA" : "#CC0000"}`,
           borderRadius: "4px",
           color: "white",
           padding: "10px 16px",
@@ -45,7 +78,7 @@ function Subscribe(props) {
           textTransform: "uppercase",
           border: "0",
         }}
-        onClick
+        onClick={OnSubscribe}
       >
         {SubscribeNumber} {Subscribed ? "Subscribed" : "Subscribe"}
       </button>
