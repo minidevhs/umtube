@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Video } = require("../models/Video");
 const { auth } = require("../middleware/auth");
+const { Subscriber } = require("../models/Subscriber");
 const multer = require("multer");
 const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
@@ -111,6 +112,30 @@ router.post("/thumbnail", (req, res) => {
       // %b input basename ( filename w/o extension )
       filename: "thumbnail-%b.png",
     });
+});
+
+router.post("/getSubscriptionVideos", (req, res) => {
+  // 자신의 아이디를 가지고 구독한 사람들을 찾는다
+  Subscriber.find({ userFrom: req.body.userFrom }).exec(
+    (err, subscriberInfo) => {
+      console.log(subscriberInfo);
+      if (err) return res.status(400).send(err);
+
+      let subscribedUser = []; // ref 참조 에러 !! let 사용시 스코프 주의할 것
+
+      subscriberInfo.map((subscriber, i) => {
+        subscribedUser.push(subscriber.userTo);
+      });
+
+      // 찾은 사람들의 비디오를 가져온다
+      Video.find({ writer: { $in: subscribedUser } })
+        .populate("writer")
+        .exec((err, videos) => {
+          if (err) return res.status(400).send(err);
+          res.status(200).json({ success: true, videos });
+        });
+    }
+  );
 });
 
 module.exports = router;
