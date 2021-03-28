@@ -9,7 +9,7 @@ function SingleComment(props) {
   const user = useSelector((state) => state.user);
 
   const [OpenReply, setOpenReply] = useState(false);
-  const [CommentValue, setCommentValue] = useState();
+  const [CommentValue, setCommentValue] = useState("");
 
   const onClickReplyOpen = () => {
     setOpenReply(!OpenReply);
@@ -31,7 +31,6 @@ function SingleComment(props) {
 
     axios.post("/api/comment/saveComment", variables).then((response) => {
       if (response.data.success) {
-        console.log(response.data.result);
         setCommentValue("");
         props.refreshFunction(response.data.result);
         setOpenReply(false);
@@ -52,7 +51,7 @@ function SingleComment(props) {
       <Comment
         actions={actions}
         author={props.comment.writer.name}
-        avatar={<Avatar src={props.comment.writer.image} alt />}
+        avatar={<Avatar src={props.comment.writer.image} alt="writerImage" />}
         content={<p> {props.comment.content} </p>}
       />
 

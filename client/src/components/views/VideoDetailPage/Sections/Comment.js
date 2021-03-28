@@ -25,8 +25,8 @@ function Comment(props) {
 
     axios.post("/api/comment/saveComment", variables).then((response) => {
       if (response.data.success) {
-        console.log(response.data.result);
         props.refreshFunction(response.data.result);
+        setcommentValue("");
       } else {
         alert("댓글 저장 실패");
       }
@@ -42,25 +42,26 @@ function Comment(props) {
       {/* Comment Lists */}
 
       {props.commentLists &&
-        props.commentLists.map((comment, index) => {
-          // root depth의 댓글들만
-          !comment.responseTo && (
-            <React.Fragment>
-              <SingleComment
-                refreshFunction={props.refreshFunction}
-                comment={comment}
-                postId={props.postId}
-                key={index}
-              />
-              <ReplyComment
-                refreshFunction={props.refreshFunction}
-                parentCommentId={comment._id}
-                commentLists={props.commentLists}
-                postId={props.postId}
-              />
-            </React.Fragment>
-          );
-        })}
+        props.commentLists.map(
+          // map 함수에서 => ()이 아닌 {} 사용으로 인한 오류
+          (comment, index) =>
+            // root depth의 댓글들만
+            !comment.responseTo && (
+              <React.Fragment key={comment._id}>
+                <SingleComment
+                  refreshFunction={props.refreshFunction}
+                  comment={comment}
+                  postId={props.postId}
+                />
+                <ReplyComment
+                  refreshFunction={props.refreshFunction}
+                  parentCommentId={comment._id}
+                  commentLists={props.commentLists}
+                  postId={props.postId}
+                />
+              </React.Fragment>
+            )
+        )}
 
       {/* Root Comment Form */}
 

@@ -15,16 +15,16 @@ function ReplyComment(props) {
     setChildCommentNumber(commentNumber);
   }, [props.commentLists]);
 
-  const renderReplyComment = (parentCommentId) => {
-    props.commentLists.map((comment, index) => {
-      <React.Fragment>
+  // 중괄호 대괄호 문제로 view more comments 작동 안되는 오류
+  const renderReplyComment = (parentCommentId) =>
+    props.commentLists.map((comment, index) => (
+      <React.Fragment key={comment._id}>
         {comment.responseTo === parentCommentId && (
           <div style={{ width: "80%", marginLeft: "40px" }}>
             <SingleComment
               refreshFunction={props.refreshFunction}
               comment={comment}
               postId={props.postId}
-              key={index}
             />
             <ReplyComment
               refreshFunction={props.refreshFunction}
@@ -34,9 +34,8 @@ function ReplyComment(props) {
             />
           </div>
         )}
-      </React.Fragment>;
-    });
-  };
+      </React.Fragment>
+    ));
 
   const onHandleChange = () => {
     setOpenReplyComments(!OpenReplyComments);
