@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import SingleComment from "./SingleComment";
+import ReplyComment from "./ReplyComment";
 
 function Comment(props) {
   const videoId = props.postId;
@@ -42,13 +43,22 @@ function Comment(props) {
 
       {props.commentLists &&
         props.commentLists.map((comment, index) => {
+          // root depth의 댓글들만
           !comment.responseTo && (
-            <SingleComment
-              refreshFunction={props.refreshFunction}
-              comment={comment}
-              postId={props.postId}
-              key={index}
-            />
+            <React.Fragment>
+              <SingleComment
+                refreshFunction={props.refreshFunction}
+                comment={comment}
+                postId={props.postId}
+                key={index}
+              />
+              <ReplyComment
+                refreshFunction={props.refreshFunction}
+                parentCommentId={comment._id}
+                commentLists={props.commentLists}
+                postId={props.postId}
+              />
+            </React.Fragment>
           );
         })}
 
