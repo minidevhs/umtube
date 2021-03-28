@@ -10,6 +10,7 @@ function VideoDetailPage(props) {
   const variable = { videoId: videoId };
 
   const [VideoDetail, setVideoDetail] = useState([]);
+  const [Comments, setComments] = useState([]);
 
   useEffect(() => {
     axios.post("/api/video/getVideoDetail", variable).then((response) => {
@@ -20,7 +21,20 @@ function VideoDetailPage(props) {
         alert("비디오 정보를 가져오는데 실패했습니다.");
       }
     });
+
+    axios.post("/api/comment/getComments", variable).then((response) => {
+      if (response.data.success) {
+        setComments(response.data.comments);
+      } else {
+        alert("댓글을 가져오는데 실패했습니다.");
+      }
+    });
   }, []);
+
+  const refreshFunction = (newComment) => {
+    setComments(Comments.concat(newComment));
+  };
+
   // 자기 자신을 구독하지 않도록
   if (VideoDetail.writer) {
     const subscribeButton = VideoDetail.writer._id !==
@@ -48,7 +62,11 @@ function VideoDetailPage(props) {
               />
             </List.Item>
             {/* comments */}
-            <Comment postId={videoId} />
+            <Comment
+              refreshFunction={refreshFunction}
+              commentLists={Comments}
+              postId={videoId}
+            />
           </div>
         </Col>
         <Col lg={6} xs={24}>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import SingleComment from "./SingleComment";
 
 function Comment(props) {
   const videoId = props.postId;
@@ -24,6 +25,7 @@ function Comment(props) {
     axios.post("/api/comment/saveComment", variables).then((response) => {
       if (response.data.success) {
         console.log(response.data.result);
+        props.refreshFunction(response.data.result);
       } else {
         alert("댓글 저장 실패");
       }
@@ -38,6 +40,18 @@ function Comment(props) {
 
       {/* Comment Lists */}
 
+      {props.commentLists &&
+        props.commentLists.map((comment, index) => {
+          !comment.responseTo && (
+            <SingleComment
+              refreshFunction={props.refreshFunction}
+              comment={comment}
+              postId={props.postId}
+              key={index}
+            />
+          );
+        })}
+
       {/* Root Comment Form */}
 
       <form style={{ display: "flex" }} onSubmit={onSubmit}>
@@ -45,7 +59,7 @@ function Comment(props) {
           style={{ width: "100%", borderRadius: "5px" }}
           onChange={handleClick}
           value={commentValue}
-          placeholder="댓글을 작성해 주세요"
+          placeholder="Write Comments"
         />
         <br />
         <button style={{ width: "20%", height: "52px" }} onClick={onSubmit}>
