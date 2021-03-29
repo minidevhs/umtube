@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, icon, Avatar, Col, Typography, Row } from "antd";
-import { FaCode } from "react-icons/fa";
+import { Card, Avatar, Col, Typography, Row } from "antd";
 import moment from "moment";
 const { Title } = Typography;
 const { Meta } = Card;
@@ -12,7 +11,6 @@ function LandingPage() {
   useEffect(() => {
     axios.get("/api/video/getVideos").then((response) => {
       if (response.data.success) {
-        console.log(response.data);
         setVideo(response.data.videos);
       } else {
         alert("비디오 가져오기를 실패했습니다.");
@@ -31,6 +29,7 @@ function LandingPage() {
             <img
               style={{ width: "100%" }}
               src={`http://localhost:5000/${video.thumbnail}`}
+              alt="thumbnail"
             />
             <div className="duration">
               <span>

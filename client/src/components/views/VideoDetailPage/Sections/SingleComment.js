@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Comment, Avatar, Button, Input } from "antd";
+import { Comment, Avatar } from "antd";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import LikeDislikes from "./LikeDislikes";
-
-const { TextArea } = Input;
 
 function SingleComment(props) {
   const user = useSelector((state) => state.user);
